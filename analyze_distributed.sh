@@ -98,8 +98,8 @@ power_for_core() {
   fi
 }
 
-if [ "$#" -ne 32 ]; then
-    echo "Invalid number of parameters. Expected:32 Passed:$#"
+if [ "$#" -ne 33 ]; then
+    echo "Invalid number of parameters. Expected:33 Passed:$#"
     usage
 fi
 
@@ -135,6 +135,7 @@ start_time=${29}
 progress=${30}
 thmgr_api=${31}
 thmgr_lib_dir=${32}
+skip_direct_profiling=${33}
 
 serial_measurement=serial.csv
 parallel_measurement=parallel.csv
@@ -279,9 +280,9 @@ ANALYTICS_GENERATION_PROGRESS=10
 repo_path="/data/repo-import/$repo_name"
 delay=0  # No delay needed with per-request socket implementation
 
-cluster_config_path="/app/config/cluster.json"
-task_config_path="/app/config/task_distribution.json"
-profiler_config_path="/app/config/profiler.json"
+cluster_config_path="config/cluster.json"
+task_config_path="config/task_distribution.json"
+profiler_config_path="config/profiler.json"
 worker_script_path="./worker.sh"
 fit_script_path="/usr/bin/fit-multivar.py"
 
@@ -378,6 +379,7 @@ python3 distributed_profiler.py \
   --request-delay "$delay" \
   --thmgr-progress "$PARALLEL_THMGR_PROGRESS" \
   --direct-progress "$PARALLEL_DIRECT_PROGRESS" \
+  --skip-direct-profiling "$skip_direct_profiling" \
   -vv 2>&1 | tee "$distributed_log_file" || {
     echo "Distributed measurement phase failed" >&2
     echo "Last 50 lines of distributed profiler log:" >&2
